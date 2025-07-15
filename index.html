@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTips Express</title>
+    <link rel="icon" href="https://placehold.co/32x32/48bb78/ffffff?text=Eco" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <link rel="stylesheet" href="style.css"> <!-- Enlace al archivo CSS externo -->
+</head>
+<body class="font-inter">
+    <!-- Contenedor para particles.js -->
+    <div id="particles-js"></div>
+
+    <!-- Botón de cambio de modo (claro/oscuro) -->
+    <button id="theme-toggle" aria-label="Cambiar tema">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Botón de cambio de idioma -->
+    <button id="language-toggle" aria-label="Cambiar idioma">
+        ES
+    </button>
+
+    <div class="container">
+        <!-- Logo de la página -->
+        <div class="logo" aria-label="EcoTips Express Logo">EcoTips</div>
+        <h1 class="text-4xl font-bold text-center mb-4" id="main-title">Express</h1>
+        <p class="text-center mb-6" id="welcome-text">
+            ¡Bienvenido a EcoTips Express! Introduce una pregunta o tema relacionado con la sostenibilidad
+            y recibe consejos ecológicos rápidos y útiles.
+        </p>
+
+        <div class="mb-4">
+            <input
+                type="text"
+                id="user-input"
+                placeholder="Escribe tu pregunta o tema aquí..."
+                class="w-full p-3 rounded-md focus:outline-none focus:ring-2"
+                aria-label="Campo de entrada para tu pregunta o tema"
+            >
+        </div>
+
+        <button
+            id="get-tip-button"
+            class="w-full font-bold py-3 px-4 rounded-md transition duration-300 ease-in-out transform shadow-md"
+            aria-label="Obtener EcoTip"
+        >
+            Obtener EcoTip
+        </button>
+
+        <div id="results" class="mt-8 rounded-md min-h-[100px] flex items-center justify-center text-center" aria-live="polite" aria-atomic="true">
+            <!-- El contenido de Gemini se mostrará aquí -->
+            <p id="initial-results-text">Los resultados aparecerán aquí...</p>
+        </div>
+
+        <!-- Contenedor para botones de acción del tip -->
+        <div id="tip-actions" class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-4" style="display: none;">
+            <!-- Botón para copiar el tip generado -->
+            <button id="copy-tip-button" aria-label="Copiar tip generado">
+                <i class="fas fa-copy"></i> <span id="copy-button-text">Copiar Tip</span>
+            </button>
+
+            <!-- Botones para compartir el tip -->
+            <div class="share-buttons" id="share-buttons-container">
+                <button id="share-twitter-button" aria-label="Compartir en X (Twitter)">
+                    <i class="fab fa-x-twitter"></i> <span class="share-button-label">X</span>
+                </button>
+                <button id="share-facebook-button" aria-label="Compartir en Facebook">
+                    <i class="fab fa-facebook-f"></i> <span class="share-button-label">Facebook</span>
+                </button>
+                <button id="share-whatsapp-button" aria-label="Compartir en WhatsApp">
+                    <i class="fab fa-whatsapp"></i> <span class="share-button-label">WhatsApp</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Spinner de carga -->
+        <div class="spinner" id="loading-spinner" role="status" aria-label="Cargando resultados"></div>
+
+        <!-- Sección para el Código QR -->
+        <div id="qr-code-section">
+            <button id="qr-code-button" aria-label="Mostrar código QR para compartir">
+                <i class="fas fa-qrcode"></i> <span id="qr-button-text">Mostrar QR</span>
+            </button>
+            <div id="qrcode-container"></div>
+        </div>
+
+        <!-- Sección de Historial de Tips -->
+        <div id="tip-history"> <!-- Visible por defecto si hay historial -->
+            <h2 id="history-title">Historial de EcoTips</h2>
+            <ul id="history-list">
+                <!-- Los tips guardados se cargarán aquí -->
+            </ul>
+            <button id="clear-history-button" aria-label="Borrar historial de tips"><span id="clear-history-button-text">Borrar Historial</span></button>
+        </div>
+
+        <!-- Sección de Contacto/Sugerencias -->
+        <div id="contact-section">
+            <h2 id="contact-title">Contáctanos / Sugerencias</h2>
+            <form id="contact-form">
+                <div>
+                    <label for="contact-name" id="contact-name-label">Nombre:</label>
+                    <input type="text" id="contact-name" name="name" required placeholder="Tu nombre">
+                </div>
+                <div>
+                    <label for="contact-email" id="contact-email-label">Correo Electrónico:</label>
+                    <input type="email" id="contact-email" name="email" required placeholder="tu.email@ejemplo.com">
+                </div>
+                <div>
+                    <label for="contact-message" id="contact-message-label">Mensaje:</label>
+                    <textarea id="contact-message" name="message" rows="5" required placeholder="Escribe tu mensaje o sugerencia aquí..."></textarea>
+                </div>
+                <button type="submit" id="contact-submit-button">Enviar Mensaje</button>
+            </form>
+        </div>
+
+        <!-- Pie de página con enlaces adicionales y derechos de autor -->
+        <div class="footer-links" role="contentinfo">
+            <a href="#" aria-label="Ir a la página Sobre Nosotros" id="about-us-link">Sobre Nosotros</a>
+            <a href="#" aria-label="Ir a la página de Contacto" id="contact-link">Contacto</a>
+            <p id="copyright-text">© 2024 EcoTips Express. Todos los derechos reservados.</p>
+        </div>
+    </div>
+
+    <!-- Contenedor para notificaciones Toast -->
+    <div id="toast-container"></div>
+
+    <!-- Botón de scroll hacia arriba -->
+    <button id="scroll-to-top" aria-label="Volver arriba">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="script.js"></script> <!-- Enlace al archivo JavaScript externo -->
+</body>
+</html>
